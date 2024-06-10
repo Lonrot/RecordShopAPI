@@ -18,7 +18,7 @@ public class Album {
     @Column
     private int releaseYear;
     @Column
-    private String genre;
+    private Genre genre;
     @Column
     private String label;
     @Column
@@ -29,7 +29,7 @@ public class Album {
     // Constructors
     public Album() {}
 
-    public Album(Long id, String name, String artist, int releaseYear, String genre, String label, double price, int stockQuantity) {
+    public Album(Long id, String name, String artist, int releaseYear, Genre genre, String label, double price, int stockQuantity) {
         this.id = id;
         this.name = name;
         this.artist = artist;
@@ -73,10 +73,10 @@ public class Album {
     }
 
     public String getGenre() {
-        return genre;
+        return genre.toString();
     }
 
-    public void setGenre(String genre) {
+    public void setGenre(Genre genre) {
         this.genre = genre;
     }
 

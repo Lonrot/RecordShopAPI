@@ -10,8 +10,10 @@ import schmalbach.recordshopapi.repository.AlbumRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 @DataJpaTest
@@ -75,6 +77,21 @@ class AlbumServiceImplementationTest {
 
     @Test
     void getAlbumByID() {
+        List<Album> albums = new ArrayList<>();
+        albums.add(new Album(1,"Mutter","Rammstein",2001, Genre.Heavy_metal,"Universal Music", 50.0,100));
+        albums.add(new Album(2, "Sehnsucht", "Rammstein", 1997, Genre.Heavy_metal, "Motor Music", 45.0, 200));
+
+        Album expectedAlbum = new Album(1,"Mutter","Rammstein",2001, Genre.Heavy_metal,"Universal Music", 50.0,100);
+        when(albumRepositoryMock.findById(1L)).thenReturn(Optional.of(expectedAlbum));
+
+        Album resultAlbum = ASI.getAlbumByID(1);
+        assertThat(resultAlbum.getName()).isEqualTo(expectedAlbum.getName());
+
+        Album expectedAlbumTwo = null;
+
+        Album resultEmptyAlbum = ASI.getAlbumByID(0);
+        assertNull(expectedAlbumTwo,"empty");
+
     }
 
     @Test

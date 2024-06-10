@@ -7,6 +7,7 @@ import schmalbach.recordshopapi.repository.AlbumRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AlbumServiceImplementation implements AlbumService {
@@ -38,8 +39,12 @@ public class AlbumServiceImplementation implements AlbumService {
     }
 
     @Override
-    public List<Album> getAllAlbumsByYear(String title) {
-        return List.of();
+    public List<Album> getAllAlbumsByYear(int year) {
+        List<Album> albumsByYear = getAllAlbumsInStock();
+        return albumsByYear.stream()
+                .filter(a -> a.getReleaseYear() == year)
+                .collect(Collectors.toList());
+
     }
 
     @Override

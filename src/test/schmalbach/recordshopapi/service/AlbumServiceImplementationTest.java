@@ -141,6 +141,50 @@ class AlbumServiceImplementationTest {
 
     @Test
     void getAllAlbumsByYear() {
+        List<Album> albums = new ArrayList<>();
+
+        albums.add(new Album(1, "Rock Album", "Rock Artist", 2000, Genre.Rock, "Rock Label", 9.99, 10));
+        albums.add(new Album(2, "Pop Album", "Pop Artist", 2001, Genre.Pop, "Pop Label", 8.99, 20));
+        albums.add(new Album(3, "Jazz Album", "Jazz Artist", 2002, Genre.Jazz, "Jazz Label", 7.99, 30));
+        albums.add(new Album(4, "Reggaeton Album", "Reggaeton Artist", 2003, Genre.Reggaeton, "Reggaeton Label", 6.99, 40));
+        albums.add(new Album(5, "HipHop Album", "HipHop Artist", 2004, Genre.Hip_Hop, "HipHop Label", 5.99, 50));
+        albums.add(new Album(6, "Electronic Album", "Electronic Artist", 2005, Genre.Electronic, "Electronic Label", 4.99, 60));
+        albums.add(new Album(7, "Heavy Metal Album", "Heavy Metal Artist", 2006, Genre.Heavy_metal, "Heavy Metal Label", 3.99, 70));
+        albums.add(new Album(8, "Blues Album", "Blues Artist", 2007, Genre.Blues, "Blues Label", 2.99, 80));
+        albums.add(new Album(9, "Phonk Album", "Phonk Artist", 2024, Genre.Phonk, "Phonk Label", 1.99, 90));
+        albums.add(new Album(10, "LoFi Album", "LoFi Artist", 2024, Genre.Lo_Fi, "LoFi Label", 0.99, 100));
+
+        when(albumRepositoryMock.findAll()).thenReturn(albums);
+        List<Album> resultList2024 = ASI.getAllAlbumsByYear(2024);
+        List<Album> resultList2000 = ASI.getAllAlbumsByYear(2000);
+
+        assertThat(resultList2024).hasSize(2);
+        assertThat(resultList2000).hasSize(1);
+
+    }
+
+    @Test
+    void getAllAlbumsByYearNotInTheList() {
+        List<Album> albums = new ArrayList<>();
+
+        albums.add(new Album(1, "Rock Album", "Rock Artist", 2000, Genre.Rock, "Rock Label", 9.99, 10));
+        albums.add(new Album(2, "Pop Album", "Pop Artist", 2001, Genre.Pop, "Pop Label", 8.99, 20));
+        albums.add(new Album(3, "Jazz Album", "Jazz Artist", 2002, Genre.Jazz, "Jazz Label", 7.99, 30));
+        albums.add(new Album(4, "Reggaeton Album", "Reggaeton Artist", 2003, Genre.Reggaeton, "Reggaeton Label", 6.99, 40));
+        albums.add(new Album(5, "HipHop Album", "HipHop Artist", 2004, Genre.Hip_Hop, "HipHop Label", 5.99, 50));
+        albums.add(new Album(6, "Electronic Album", "Electronic Artist", 2005, Genre.Electronic, "Electronic Label", 4.99, 60));
+        albums.add(new Album(7, "Heavy Metal Album", "Heavy Metal Artist", 2006, Genre.Heavy_metal, "Heavy Metal Label", 3.99, 70));
+        albums.add(new Album(8, "Blues Album", "Blues Artist", 2007, Genre.Blues, "Blues Label", 2.99, 80));
+        albums.add(new Album(9, "Phonk Album", "Phonk Artist", 2024, Genre.Phonk, "Phonk Label", 1.99, 90));
+        albums.add(new Album(10, "LoFi Album", "LoFi Artist", 2024, Genre.Lo_Fi, "LoFi Label", 0.99, 100));
+
+        when(albumRepositoryMock.findAll()).thenReturn(albums);
+        List<Album> resultList = ASI.getAllAlbumsByYear(3555);
+
+
+        assertThat(resultList).hasSize(0);
+
+
     }
 
     @Test

@@ -1,16 +1,13 @@
 package schmalbach.recordshopapi.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Album {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false,nullable = false)
-    private Long id;
+    private int id;
     @Column
     private String name;
     @Column
@@ -29,7 +26,7 @@ public class Album {
     // Constructors
     public Album() {}
 
-    public Album(Long id, String name, String artist, int releaseYear, Genre genre, String label, double price, int stockQuantity) {
+    public Album(int id, String name, String artist, int releaseYear, Genre genre, String label, double price, int stockQuantity) {
         this.id = id;
         this.name = name;
         this.artist = artist;
@@ -40,11 +37,11 @@ public class Album {
         this.stockQuantity = stockQuantity;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

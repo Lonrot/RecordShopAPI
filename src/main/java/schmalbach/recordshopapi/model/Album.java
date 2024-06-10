@@ -1,14 +1,29 @@
 package schmalbach.recordshopapi.model;
 
-public class Album {
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 
+@Entity
+public class Album {
+    @Id
+    @GeneratedValue
+    @Column(updatable = false,nullable = false)
     private Long id;
+    @Column
     private String name;
+    @Column
     private String artist;
+    @Column
     private int releaseYear;
+    @Column
     private String genre;
+    @Column
     private String label;
+    @Column
     private double price;
+    @Column
     private int stockQuantity;
 
     // Constructors
@@ -87,5 +102,19 @@ public class Album {
 
     public void setStockQuantity(int stockQuantity) {
         this.stockQuantity = stockQuantity;
+    }
+
+    @Override
+    public String toString() {
+        return "Album{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", artist='" + artist + '\'' +
+                ", releaseYear=" + releaseYear +
+                ", genre='" + genre + '\'' +
+                ", label='" + label + '\'' +
+                ", price=" + price +
+                ", stockQuantity=" + stockQuantity +
+                '}';
     }
 }

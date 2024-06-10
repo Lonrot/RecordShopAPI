@@ -13,7 +13,7 @@ class AlbumTest {
         albumTestOne.setName("Test Album");
         albumTestOne.setArtist("Test Artist");
         albumTestOne.setReleaseYear(2024);
-        albumTestOne.setGenre("Rock");
+        albumTestOne.setGenre(Genre.Rock);
         albumTestOne.setLabel("Test Label");
         albumTestOne.setPrice(9.99);
         albumTestOne.setStockQuantity(100);
@@ -29,7 +29,7 @@ class AlbumTest {
     }
         @Test
         public void testToString() {
-            Album album = new Album(1L, "Test Album", "Test Artist", 2021, "Rock", "Test Label", 9.99, 100);
+            Album album = new Album(1L, "Test Album", "Test Artist", 2021, Genre.Rock, "Test Label", 9.99, 100);
             String expectedString = "Album{id=1, name='Test Album', artist='Test Artist', releaseYear=2021, genre='Rock', label='Test Label', price=9.99, stockQuantity=100}";
             System.out.println(album.toString());
             assertEquals(expectedString, album.toString());

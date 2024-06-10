@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
@@ -181,18 +182,39 @@ class AlbumServiceImplementationTest {
         when(albumRepositoryMock.findAll()).thenReturn(albums);
         List<Album> resultList = ASI.getAllAlbumsByYear(3555);
 
-
         assertThat(resultList).hasSize(0);
-
-
     }
 
     @Test
     void getAllAlbumsByGenre() {
+        List<Album> albums = new ArrayList<>();
+
+        albums.add(new Album(1, "Rock Album", "Rock Artist", 2000, Genre.Rock, "Rock Label", 9.99, 10));
+        albums.add(new Album(2, "Pop Album", "Pop Artist", 2001, Genre.Pop, "Pop Label", 8.99, 20));
+        albums.add(new Album(3, "Jazz Album", "Jazz Artist", 2002, Genre.Jazz, "Jazz Label", 7.99, 30));
+        albums.add(new Album(4, "Reggaeton Album", "Reggaeton Artist", 2003, Genre.Reggaeton, "Reggaeton Label", 6.99, 40));
+        albums.add(new Album(5, "Rock Album 2", "Rock Artist 2", 2004, Genre.Rock, "Rock Label", 5.99, 50));
+
+        when(albumRepositoryMock.findAll()).thenReturn(albums);
+        List<Album> albumRock = ASI.getAllAlbumsByGenre("Rock");
+        assertThat(albumRock).hasSize(2);
+
+        List<Album> albumJazz = ASI.getAllAlbumsByGenre("Jazz");
+        assertThat(albumJazz).hasSize(1);
+
     }
 
     @Test
-    void getAlbumInfo() {
+    void getAlbumInfoByName() {
+        Album mutter = new Album(1,"Mutter","Rammstein",2001, Genre.Heavy_metal,"Universal Music", 50.0,100);
+
+        when(albumRepositoryMock.findByNameIgnoreCase("Mutter")).thenReturn(Optional.of(mutter));
+
+        Album resultAlbum = ASI.getAlbumInfoByName("Mutter");
+
+        assertThat(resultAlbum).isNotNull();
+        assertEquals("Mutter", resultAlbum.getName());
+        assertEquals("Heavy_metal", resultAlbum.getGenre());
     }
 
     @Test

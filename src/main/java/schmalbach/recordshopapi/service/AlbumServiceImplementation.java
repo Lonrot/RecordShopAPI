@@ -48,13 +48,17 @@ public class AlbumServiceImplementation implements AlbumService {
     }
 
     @Override
-    public List<Album> getAllAlbumsByGenre(String genre) {
-        return List.of();
+    public List<Album> getAllAlbumsByGenre(String genreInput) {
+        List<Album> albumsByYear = getAllAlbumsInStock();
+        return albumsByYear.stream()
+                .filter(a -> a.getGenre().equalsIgnoreCase(genreInput))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Album getAlbumInfo(Album album) {
-        return null;
+    public Album getAlbumInfoByName(String albumName) {
+        return albumRepository.findByNameIgnoreCase(albumName).orElse(null);
+
     }
 
     @Override

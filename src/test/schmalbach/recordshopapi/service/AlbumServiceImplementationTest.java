@@ -96,6 +96,47 @@ class AlbumServiceImplementationTest {
 
     @Test
     void getAllAlbumsByArtist() {
+        List<Album> albums = new ArrayList<>();
+
+        //Rammstein
+        albums.add(new Album(1,"Mutter","Rammstein",2001, Genre.Heavy_metal,"Universal Music", 50.0,100));
+        albums.add(new Album(2, "Sehnsucht", "NotRammstein", 1997, Genre.Heavy_metal, "Motor Music", 45.0, 200));
+        //Rammstein
+        albums.add(new Album(3, "Reise, Reise", "Rammstein", 2004, Genre.Heavy_metal, "Universal Music", 55.0, 150));
+        albums.add(new Album(4, "Liebe ist für alle da", "NotRammstein", 2009, Genre.Heavy_metal, "Universal Music", 60.0, 180));
+        albums.add(new Album(5, "Rammstein", "NotRammstein", 2019, Genre.Heavy_metal, "Universal Music", 65.0, 120));
+        albums.add(new Album(6, "Herzeleid", "NotRammstein", 1995, Genre.Heavy_metal, "Motor Music", 40.0, 250));
+        albums.add(new Album(7, "Rosenrot", "NotRammstein", 2005, Genre.Heavy_metal, "Universal Music", 55.0, 130));
+        //Books below have no stock and some are Rammstein
+        albums.add(new Album(8, "Liebe ist für alle da (Special Edition)", "Rammstein", 2009, Genre.Heavy_metal, "Universal Music", 70.0, 0));
+        albums.add(new Album(9, "Made in Germany 1995–2011", "Rammstein", 2011, Genre.Heavy_metal, "Universal Music", 60.0, 0));
+        albums.add(new Album(10, "XXI (The Vinyl Box Set)", "NotRammstein", 2015, Genre.Heavy_metal, "Universal Music", 120.0, 0));
+
+        when(albumRepositoryMock.findAll()).thenReturn(albums);
+        List<Album> resultAlbums = ASI.getAllAlbumsByArtist("Rammstein");
+
+        assertThat(resultAlbums).hasSize(2);
+    }
+
+    @Test
+    void getAllAlbumsByArtistThatIsNotInTheList() {
+        List<Album> albums = new ArrayList<>();
+
+        albums.add(new Album(1,"Mutter","Rammstein",2001, Genre.Heavy_metal,"Universal Music", 50.0,100));
+        albums.add(new Album(2, "Sehnsucht", "Rammstein", 1997, Genre.Heavy_metal, "Motor Music", 45.0, 200));
+        albums.add(new Album(3, "Reise, Reise", "Rammstein", 2004, Genre.Heavy_metal, "Universal Music", 55.0, 150));
+        albums.add(new Album(4, "Liebe ist für alle da", "Rammstein", 2009, Genre.Heavy_metal, "Universal Music", 60.0, 180));
+        albums.add(new Album(5, "Rammstein", "Rammstein", 2019, Genre.Heavy_metal, "Universal Music", 65.0, 120));
+        albums.add(new Album(6, "Herzeleid", "Rammstein", 1995, Genre.Heavy_metal, "Motor Music", 40.0, 250));
+        albums.add(new Album(7, "Rosenrot", "Rammstein", 2005, Genre.Heavy_metal, "Universal Music", 55.0, 130));
+        albums.add(new Album(8, "Liebe ist für alle da (Special Edition)", "Rammstein", 2009, Genre.Heavy_metal, "Universal Music", 70.0, 0));
+        albums.add(new Album(9, "Made in Germany 1995–2011", "Rammstein", 2011, Genre.Heavy_metal, "Universal Music", 60.0, 0));
+        albums.add(new Album(10, "XXI (The Vinyl Box Set)", "Rammstein", 2015, Genre.Heavy_metal, "Universal Music", 120.0, 0));
+
+        when(albumRepositoryMock.findAll()).thenReturn(albums);
+        List<Album> resultAlbums = ASI.getAllAlbumsByArtist("Pink Floyd");
+
+        assertThat(resultAlbums).hasSize(0);
     }
 
     @Test

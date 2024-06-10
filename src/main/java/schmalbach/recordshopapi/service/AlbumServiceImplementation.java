@@ -32,8 +32,9 @@ public class AlbumServiceImplementation implements AlbumService {
     }
 
     @Override
-    public List<Album> getAllAlbumsByArtist(String artist) {
-        return List.of();
+    public List<Album> getAllAlbumsByArtist(String artistInput) {
+        List<Album> albumsByArtist = getAllAlbumsInStock();
+        return albumsByArtist.stream().filter(a -> a.getArtist().equalsIgnoreCase(artistInput)).toList();
     }
 
     @Override

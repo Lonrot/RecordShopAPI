@@ -15,6 +15,7 @@ public class Album {
     @Column
     private int releaseYear;
     @Column
+    @Enumerated(EnumType.STRING) //@Enumerated
     private Genre genre;
     @Column
     private String label;

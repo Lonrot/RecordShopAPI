@@ -16,7 +16,7 @@ public class AlbumRepositoryTest {
 
     @Test
     void testFindAllAlbumsReturnAlbums(){
-        Album album = new Album(1,"Mutter","Rammstein",2001, Genre.HEAVY_METAL,"Universal",60.00,300);
+        Album album = new Album(1L,"Mutter","Rammstein",2001, Genre.HEAVY_METAL,"Universal",60.00,300);
         albumRepository.save(album);
 
         Iterable<Album> albumsList = albumRepository.findAll();

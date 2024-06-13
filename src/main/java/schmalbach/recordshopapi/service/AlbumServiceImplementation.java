@@ -1,7 +1,9 @@
 package schmalbach.recordshopapi.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import schmalbach.recordshopapi.exception.AlbumNotFoundException;
 import schmalbach.recordshopapi.model.Album;
 import schmalbach.recordshopapi.repository.AlbumRepository;
 
@@ -51,7 +53,7 @@ public class AlbumServiceImplementation implements AlbumService {
     public List<Album> getAllAlbumsByGenre(String genreInput) {
         List<Album> albumsByYear = getAllAlbumsInStock();
         return albumsByYear.stream()
-                .filter(a -> a.getGenre().equalsIgnoreCase(genreInput))
+                .filter(a -> a.getGenreString().equalsIgnoreCase(genreInput))
                 .collect(Collectors.toList());
     }
 
@@ -68,9 +70,14 @@ public class AlbumServiceImplementation implements AlbumService {
 
     @Override
     public Album updateAlbum(Album albumInput) {
-        Optional<Album> albumOptional = albumRepository.findById( albumInput.getId());
+        Optional<Album> albumFoundWithGivenID = albumRepository.findById(albumInput.getId());
 
+        if (albumFoundWithGivenID.isPresent()) {
+            return albumRepository.save(albumInput);
+        }
+        throw new AlbumNotFoundException("Album not found");
     }
+
 
     @Override
     public void deleteAlbum(Album album) {

@@ -1,8 +1,11 @@
 package schmalbach.recordshopapi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
+@DynamicUpdate
 public class Album {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +30,7 @@ public class Album {
     // Constructors
     public Album() {}
 
-    public Album(int id, String name, String artist, int releaseYear, Genre genre, String label, double price, int stockQuantity) {
+    public Album(Long id, String name, String artist, int releaseYear, Genre genre, String label, double price, int stockQuantity) {
         this.id = id;
         this.name = name;
         this.artist = artist;
@@ -38,11 +41,11 @@ public class Album {
         this.stockQuantity = stockQuantity;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -70,7 +73,10 @@ public class Album {
         this.releaseYear = releaseYear;
     }
 
-    public String getGenre() {
+    public Genre getGenre() {
+        return genre;
+    }
+    public String getGenreString(){
         return genre.toString();
     }
 

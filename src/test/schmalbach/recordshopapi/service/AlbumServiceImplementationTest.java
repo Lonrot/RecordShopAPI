@@ -1,9 +1,11 @@
 package schmalbach.recordshopapi.service;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import schmalbach.recordshopapi.exception.AlbumNotFoundException;
 import schmalbach.recordshopapi.model.Album;
 import schmalbach.recordshopapi.model.Genre;
 import schmalbach.recordshopapi.repository.AlbumRepository;
@@ -13,8 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @DataJpaTest
@@ -85,12 +86,12 @@ class AlbumServiceImplementationTest {
         Album expectedAlbum = new Album(1,"Mutter","Rammstein",2001, Genre.HEAVY_METAL,"Universal Music", 50.0,100);
         when(albumRepositoryMock.findById(1L)).thenReturn(Optional.of(expectedAlbum));
 
-        Album resultAlbum = ASI.getAlbumByID(1);
+        Album resultAlbum = ASI.getAlbumByID(1L);
         assertThat(resultAlbum.getName()).isEqualTo(expectedAlbum.getName());
 
         Album expectedAlbumTwo = null;
 
-        Album resultEmptyAlbum = ASI.getAlbumByID(0);
+        Album resultEmptyAlbum = ASI.getAlbumByID(0L);
         assertNull(expectedAlbumTwo,"empty");
 
     }
@@ -218,6 +219,7 @@ class AlbumServiceImplementationTest {
     }
 
     @Test
+    @DisplayName("add Album")
     void addAlbum() {
         Album mutter = new Album(1,"Mutter","Rammstein",2001, Genre.HEAVY_METAL,"Universal Music", 50.0,100);
 
@@ -227,8 +229,30 @@ class AlbumServiceImplementationTest {
     }
 
     @Test
-    void updateAlbum() {
+    @DisplayName("update existing Album")
+    void updateAlbumInDB() {
+        Album albumInDB = new Album(1,"Mutter","Rammstein",2001, Genre.HEAVY_METAL,"Universal Music", 50.0,100);
+
+        when(albumRepositoryMock.findById(1L)).thenReturn(Optional.of(albumInDB));
+
+        Album albumInput = new Album(1,"Mutter Updated","Rammstein Updated",2010, Genre.HEAVY_METAL,"Universal Music Updated", 50.0,100);
+        Album updatedAlbum = ASI.updateAlbum(albumInput);
+
+        assertEquals(albumInput.getName(), updatedAlbum.getName());
+        assertEquals(albumInput.getGenre(), updatedAlbum.getGenre());
+        assertEquals(albumInput.getArtist(), updatedAlbum.getArtist());
     }
+    @Test
+    @DisplayName("Update non Existing Album in DB")
+    void testUpdateNonExistingAlbum() {
+        Album nonExistingAlbum = new Album(1,"Mutter","Rammstein",2001, Genre.HEAVY_METAL,"Universal Music", 50.0,100);
+        when(albumRepositoryMock.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(AlbumNotFoundException.class, () -> {
+            ASI.updateAlbum(nonExistingAlbum);
+        });
+    }
+
 
     @Test
     void deleteAlbum() {

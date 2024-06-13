@@ -7,6 +7,7 @@ import schmalbach.recordshopapi.repository.AlbumRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,9 +28,8 @@ public class AlbumServiceImplementation implements AlbumService {
     }
 
     @Override
-    public Album getAlbumByID(int ID) {
-        Long IDToLong = (long) ID;
-        return albumRepository.findById(IDToLong).orElse(null);
+    public Album getAlbumByID(Long ID) {
+        return albumRepository.findById(ID).orElse(null);
     }
 
     @Override
@@ -67,8 +67,9 @@ public class AlbumServiceImplementation implements AlbumService {
     }
 
     @Override
-    public Album updateAlbum(Album album) {
-        return null;
+    public Album updateAlbum(Album albumInput) {
+        Optional<Album> albumOptional = albumRepository.findById( albumInput.getId());
+
     }
 
     @Override

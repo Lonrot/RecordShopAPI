@@ -1,5 +1,5 @@
 package schmalbach.recordshopapi.model;
 
 public enum Genre {
-    Heavy_metal, Rock, Punk, Phonk, Pop, Electronic, Lo_Fi, Reggaeton, Hip_Hop, Jazz, Blues
+    HEAVY_METAL, ROCK, PUNK, PHONK, POP, ELECTRONIC, LO_FI, REGGAETON, HIP_HOP, JAZZ, BLUES
 }

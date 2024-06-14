@@ -10,7 +10,7 @@ public class Album {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false,nullable = false)
-    private Long id;
+    private long id;
     @Column
     private String name;
     @Column

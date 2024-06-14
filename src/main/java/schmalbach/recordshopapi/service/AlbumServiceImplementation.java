@@ -80,9 +80,9 @@ public class AlbumServiceImplementation implements AlbumService {
 
     @Override
     public boolean deleteAlbumByID(long albumToDeleteID) {
-       Album albumtoDelete = albumRepository.findById(albumToDeleteID).orElse(null);
-       if (albumtoDelete != null) {
-           albumRepository.delete(albumtoDelete);
+       Album albumToDelete = albumRepository.findById(albumToDeleteID).orElse(null);
+       if (albumToDelete != null) {
+           albumRepository.delete(albumToDelete);
            return true;
        }
        return false;

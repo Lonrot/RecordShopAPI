@@ -246,7 +246,7 @@ class AlbumServiceImplementationTest {
 
         assertEquals(albumInput.getName(), updatedAlbum.getName());
         verify(albumRepositoryMock,times(1)).findById(1L);
-        //verify(albumRepository,times(1)).updateAlbum(albumInput);
+
     }
     @Test
     @DisplayName("Update non Existing Album in DB")

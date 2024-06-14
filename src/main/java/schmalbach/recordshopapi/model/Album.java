@@ -11,7 +11,7 @@ public class Album {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false,nullable = false)
     private long id;
-    @Column
+    @Column(unique = true,nullable = false)
     private String name;
     @Column
     private String artist;

@@ -261,13 +261,15 @@ class AlbumServiceImplementationTest {
 
 
     @Test
-    void deleteAlbum() {
-        List<Album> albums = new ArrayList<>();
-        albums.add (new Album(1L,"Mutter","Rammstein",2001, Genre.HEAVY_METAL,"Universal Music", 50.0,100));
-        when(albumRepositoryMock.findById(1L)).thenReturn(Optional.of(albums.get(0)));
+    void deleteAlbumByID() {
 
-        ASI.deleteAlbum(1L);
-        assertThat(albums).hasSize(0);
+        Album album = new Album(1L,"Mutter","Rammstein",2001, Genre.HEAVY_METAL,"Universal Music", 50.0,100);
+        when(albumRepositoryMock.findById(1L)).thenReturn(Optional.of(album));
+
+        ASI.deleteAlbumByID(1L);
+
+        verify(albumRepositoryMock,times(1)).findById(1L);
+        verify(albumRepositoryMock,times(1)).delete(album);
 
     }
 }

@@ -1,6 +1,5 @@
 package schmalbach.recordshopapi.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import schmalbach.recordshopapi.exception.AlbumNotFoundException;
@@ -80,7 +79,12 @@ public class AlbumServiceImplementation implements AlbumService {
 
 
     @Override
-    public void deleteAlbum(Album album) {
-
+    public boolean deleteAlbumByID(long albumToDeleteID) {
+       Album albumtoDelete = albumRepository.findById(albumToDeleteID).orElse(null);
+       if (albumtoDelete != null) {
+           albumRepository.delete(albumtoDelete);
+           return true;
+       }
+       return false;
     }
 }

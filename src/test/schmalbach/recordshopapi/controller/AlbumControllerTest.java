@@ -2,6 +2,7 @@ package schmalbach.recordshopapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -72,6 +73,32 @@ class AlbumControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[4].name").value("Rock Album 2"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[4].artist").value("Rock Artist 2"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[4].stockQuantity").value(50));
+
+    }
+
+    @Test
+    @DisplayName("Find album in the DB")
+    void getAlbumByID() throws Exception {
+        List<Album> albums = new ArrayList<>();
+
+        albums.add(new Album(1L, "Rock Album", "Rock Artist", 2000, Genre.ROCK, "Rock Label", 9.99, 10));
+        albums.add(new Album(2L, "Pop Album", "Pop Artist", 2001, Genre.POP, "Pop Label", 8.99, 20));
+
+        when(albumServiceImplementation.getAllAlbumsInStock()).thenReturn(albums);
+        when(albumServiceImplementation.getAlbumByID(1L)).thenReturn(albums.getFirst());
+
+        this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/album/1"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Rock Album"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.artist").value("Rock Artist"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.stockQuantity").value(10));
+    }
+    @Test
+    @DisplayName("Album not in DB, Error")
+    void getAlbumByIDNotFound() throws Exception {
+        when(albumServiceImplementation.getAllAlbumsInStock()).thenReturn(null);
+        this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/album/1"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
 
     }
 }

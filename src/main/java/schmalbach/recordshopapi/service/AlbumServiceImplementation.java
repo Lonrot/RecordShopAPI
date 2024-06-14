@@ -29,8 +29,12 @@ public class AlbumServiceImplementation implements AlbumService {
     }
 
     @Override
-    public Album getAlbumByID(Long ID) {
-        return albumRepository.findById(ID).orElse(null);
+    public Album getAlbumByID(long ID) {
+        List<Album> albumsInStock = getAllAlbumsInStock();
+        return albumsInStock.stream()
+                .filter(album -> album.getId() == ID)
+                .findFirst()
+                .orElse(null);
     }
 
     @Override

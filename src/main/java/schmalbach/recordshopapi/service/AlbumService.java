@@ -7,7 +7,7 @@ import java.util.List;
 public interface AlbumService {
 
     List<Album> getAllAlbumsInStock();
-    Album getAlbumByID(Long ID);
+    Album getAlbumByID(long ID);
     List<Album> getAllAlbumsByArtist(String artist);
     List<Album> getAllAlbumsByYear(int year);
     List<Album> getAllAlbumsByGenre(String genre);

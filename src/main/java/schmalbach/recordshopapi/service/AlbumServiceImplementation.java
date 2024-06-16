@@ -4,11 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import schmalbach.recordshopapi.exception.AlbumNotFoundException;
 import schmalbach.recordshopapi.model.Album;
+import schmalbach.recordshopapi.model.Genre;
 import schmalbach.recordshopapi.repository.AlbumRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -16,6 +16,10 @@ public class AlbumServiceImplementation implements AlbumService {
 
     @Autowired
     AlbumRepository albumRepository;
+    @Override
+    public boolean albumExists(long id) {
+        return albumRepository.existsById(id);
+    }
 
     @Override
     public List<Album> getAllAlbumsInStock() {
@@ -30,11 +34,7 @@ public class AlbumServiceImplementation implements AlbumService {
 
     @Override
     public Album getAlbumByID(long ID) {
-        List<Album> albumsInStock = getAllAlbumsInStock();
-        return albumsInStock.stream()
-                .filter(album -> album.getId() == ID)
-                .findFirst()
-                .orElse(null);
+        return albumRepository.findById(ID).orElse(null);
     }
 
     @Override
@@ -53,12 +53,15 @@ public class AlbumServiceImplementation implements AlbumService {
     }
 
     @Override
-    public List<Album> getAllAlbumsByGenre(String genreInput) {
-        List<Album> albumsByYear = getAllAlbumsInStock();
-        return albumsByYear.stream()
-                .filter(a -> a.getGenreString().equalsIgnoreCase(genreInput))
-                .collect(Collectors.toList());
+    public List<Album> getAllAlbumsByGenre(Genre genreInput) {
+       List<Album> albumInputGenreList= albumRepository.findByGenre(genreInput);
+
+       if(!albumInputGenreList.isEmpty()) {
+           return albumInputGenreList;
+       }
+       throw new RuntimeException("NO LIST");
     }
+
 
     @Override
     public Album getAlbumInfoByName(String albumName) {
@@ -72,13 +75,13 @@ public class AlbumServiceImplementation implements AlbumService {
     }
 
     @Override
-    public Album updateAlbum(Album albumInput) {
-        Optional<Album> albumFoundWithGivenID = albumRepository.findById(albumInput.getId());
-
-        if (albumFoundWithGivenID.isPresent()) {
+    public Album updateAlbum(long ID ,Album albumInput) {
+        if(albumRepository.existsById(ID)) {
+            //Updated logic to implement ,updated info into existing.
             return albumRepository.save(albumInput);
+        }else {
+            throw new AlbumNotFoundException("Album not found");
         }
-        throw new AlbumNotFoundException("Album not found");
     }
 
 
@@ -90,5 +93,36 @@ public class AlbumServiceImplementation implements AlbumService {
            return true;
        }
        return false;
+    }
+
+    public static Genre getGenreFromString(String genre) {
+        if (genre == null) {
+            throw new IllegalArgumentException("Genre string cannot be null");
+        }
+
+        return switch (genre.toUpperCase()) {
+            case "HEAVY_METAL" -> Genre.HEAVY_METAL;
+            case "ROCK" -> Genre.ROCK;
+            case "PUNK" -> Genre.PUNK;
+            case "PHONK" -> Genre.PHONK;
+            case "POP" -> Genre.POP;
+            case "ELECTRONIC" -> Genre.ELECTRONIC;
+            case "LO_FI" -> Genre.LO_FI;
+            case "REGGAETON" -> Genre.REGGAETON;
+            case "HIP_HOP" -> Genre.HIP_HOP;
+            case "JAZZ" -> Genre.JAZZ;
+            case "BLUES" -> Genre.BLUES;
+            case "COUNTRY" -> Genre.COUNTRY;
+            case "FUNK" -> Genre.FUNK;
+            case "CLASSICAL" -> Genre.CLASSICAL;
+            case "INDIE" -> Genre.INDIE;
+            case "RAP" -> Genre.RAP;
+            case "R_AND_B" -> Genre.R_AND_B;
+            case "SOUL" -> Genre.SOUL;
+            case "EDM" -> Genre.EDM;
+            case "DISCO" -> Genre.DISCO;
+            case "HOUSE" -> Genre.HOUSE;
+            default -> throw new IllegalArgumentException("Unknown genre: " + genre);
+        };
     }
 }

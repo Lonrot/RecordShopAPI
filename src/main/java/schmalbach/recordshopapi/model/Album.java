@@ -1,17 +1,15 @@
 package schmalbach.recordshopapi.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import org.hibernate.annotations.DynamicUpdate;
+
 
 @Entity
-@DynamicUpdate
 public class Album {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false,nullable = false)
-    private long id;
-    @Column(unique = true,nullable = false)
+    private  long id;
+    @Column//(unique = true,nullable = false)
     private String name;
     @Column
     private String artist;
@@ -75,9 +73,6 @@ public class Album {
 
     public Genre getGenre() {
         return genre;
-    }
-    public String getGenreString(){
-        return genre.toString();
     }
 
     public void setGenre(Genre genre) {

@@ -8,10 +8,12 @@ import org.mockito.Mock;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 
+import org.springframework.boot.test.mock.mockito.MockBean;
 import schmalbach.recordshopapi.exception.AlbumNotFoundException;
 import schmalbach.recordshopapi.model.Album;
 import schmalbach.recordshopapi.model.Genre;
 import schmalbach.recordshopapi.repository.AlbumRepository;
+import schmalbach.recordshopapi.service.AlbumServiceImplementation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,21 +86,24 @@ class AlbumServiceImplementationTest {
 
     @Test
     void getAlbumByID() {
+        // Arrange
         List<Album> albums = new ArrayList<>();
-        albums.add(new Album(1L,"Mutter","Rammstein",2001, Genre.HEAVY_METAL,"Universal Music", 50.0,100));
+        albums.add(new Album(1L, "Mutter", "Rammstein", 2001, Genre.HEAVY_METAL, "Universal Music", 50.0, 100));
         albums.add(new Album(2L, "Sehnsucht", "Rammstein", 1997, Genre.HEAVY_METAL, "Motor Music", 45.0, 200));
 
-        Album expectedAlbum = new Album(1L,"Mutter","Rammstein",2001, Genre.HEAVY_METAL,"Universal Music", 50.0,100);
-        when(albumRepositoryMock.findById(1L)).thenReturn(Optional.of(expectedAlbum));
+        // Mocking repository behavior
+        when(albumRepositoryMock.findById(1L)).thenReturn(Optional.of(albums.getFirst()));
+        when(albumRepositoryMock.findById(0L)).thenReturn(Optional.empty());
 
+        // Act & Assert
+        // Test with valid ID (1L)
         Album resultAlbum = ASI.getAlbumByID(1L);
-        assertThat(resultAlbum.getName()).isEqualTo(expectedAlbum.getName());
+        assertThat(resultAlbum).isNotNull();
+        assertThat(resultAlbum.getName()).isEqualTo("Mutter");
 
-        Album expectedAlbumTwo = null;
 
         Album resultEmptyAlbum = ASI.getAlbumByID(0L);
-        assertNull(expectedAlbumTwo,"empty");
-
+        assertNull(resultEmptyAlbum, "Expected null for non-existing album");
     }
 
     @Test
@@ -201,12 +206,16 @@ class AlbumServiceImplementationTest {
         albums.add(new Album(4L, "Reggaeton Album", "Reggaeton Artist", 2003, Genre.REGGAETON, "Reggaeton Label", 6.99, 40));
         albums.add(new Album(5L, "Rock Album 2", "Rock Artist 2", 2004, Genre.ROCK, "Rock Label", 5.99, 50));
 
-        when(albumRepositoryMock.findAll()).thenReturn(albums);
-        List<Album> albumRock = ASI.getAllAlbumsByGenre("Rock");
+        // Mocking the repository method call
+        when(albumRepositoryMock.findByGenre(Genre.ROCK)).thenReturn(albums.subList(0, 2));
+        when(albumRepositoryMock.findByGenre(Genre.POP)).thenReturn(albums.subList(1, 2));
+
+        // Calling the service method
+        List<Album> albumRock = ASI.getAllAlbumsByGenre(Genre.ROCK);
         assertThat(albumRock).hasSize(2);
 
-        List<Album> albumJazz = ASI.getAllAlbumsByGenre("Jazz");
-        assertThat(albumJazz).hasSize(1);
+        List<Album> albumPop = ASI.getAllAlbumsByGenre(Genre.POP);
+        assertThat(albumPop).hasSize(1);
 
     }
 
@@ -242,7 +251,7 @@ class AlbumServiceImplementationTest {
         when(albumRepositoryMock.save(albumInput)).thenReturn(albumInput);
 
 
-        Album updatedAlbum = ASI.updateAlbum(albumInput);
+        Album updatedAlbum = ASI.updateAlbum(1L,albumInput);
 
         assertEquals(albumInput.getName(), updatedAlbum.getName());
         verify(albumRepositoryMock,times(1)).findById(1L);
@@ -255,7 +264,7 @@ class AlbumServiceImplementationTest {
         when(albumRepositoryMock.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(AlbumNotFoundException.class, () -> {
-            ASI.updateAlbum(nonExistingAlbum);
+            ASI.updateAlbum(1L,nonExistingAlbum);
         });
     }
 
@@ -272,4 +281,5 @@ class AlbumServiceImplementationTest {
         verify(albumRepositoryMock,times(1)).delete(album);
 
     }
+
 }

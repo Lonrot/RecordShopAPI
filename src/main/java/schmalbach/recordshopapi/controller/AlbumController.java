@@ -33,5 +33,23 @@ public class AlbumController {
         return new ResponseEntity<>(albumResponse, HttpStatus.OK);
     }
 
+    @PostMapping("/add")
+    public ResponseEntity<Album> createAlbum(@RequestBody Album albumInput) {
+        Album toReturnAlbum = albumService.addAlbum(albumInput);
+     /*   if( toReturnAlbum == null){
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Album already exists");
+        }*/
+        return new ResponseEntity<>(toReturnAlbum, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/update/{albumID}")
+    public ResponseEntity<Album> updateAlbum(@PathVariable long albumID, @RequestBody Album albumInput) {
+       return(albumService.albumExists(albumID))
+               ? new ResponseEntity<>(albumService.updateAlbum(albumID,albumInput), HttpStatus.OK)
+               : new ResponseEntity<>(albumService.addAlbum(albumInput), HttpStatus.CREATED);
+
+    }
+
+
 
 }

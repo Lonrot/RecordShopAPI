@@ -9,6 +9,7 @@ import schmalbach.recordshopapi.repository.AlbumRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -76,11 +77,19 @@ public class AlbumServiceImplementation implements AlbumService {
 
     @Override
     public Album updateAlbum(long ID ,Album albumInput) {
-        if(albumRepository.existsById(ID)) {
-            //Updated logic to implement ,updated info into existing.
-            return albumRepository.save(albumInput);
-        }else {
-            throw new AlbumNotFoundException("Album not found");
+        Optional<Album> retrievedAlbum = albumRepository.findById(ID);
+
+        if(retrievedAlbum.isPresent()) {
+            Album updatedAlbum = retrievedAlbum.get();
+            updatedAlbum.setName(albumInput.getName());
+            updatedAlbum.setArtist(albumInput.getArtist());
+            updatedAlbum.setReleaseYear(albumInput.getReleaseYear());
+            updatedAlbum.setGenre(albumInput.getGenre());
+            updatedAlbum.setLabel(albumInput.getLabel());
+
+            return albumRepository.save(updatedAlbum);
+        } else {
+            throw new AlbumNotFoundException("Album with id " + ID + " not found");
         }
     }
 

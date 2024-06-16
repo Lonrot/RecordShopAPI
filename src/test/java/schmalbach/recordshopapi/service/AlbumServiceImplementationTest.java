@@ -245,18 +245,31 @@ class AlbumServiceImplementationTest {
     @Test
     @DisplayName("update existing Album")
     void updateAlbumInDB() {
-        Album albumInDB = new Album(1L,"Mutter","Rammstein",2001, Genre.HEAVY_METAL,"Universal Music", 50.0,100);
-        Album albumInput = new Album(1L,"Mutter Updated","Rammstein Updated",2010, Genre.HEAVY_METAL,"Universal Music Updated", 50.0,100);
+
+        Album albumInDB = new Album(1L, "Mutter", "Rammstein", 2001, Genre.HEAVY_METAL, "Universal Music", 50.0, 100);
+        Album albumInput = new Album(1L, "Mutter Updated", "Rammstein Updated", 2010, Genre.HEAVY_METAL, "Universal Music Updated", 50.0, 100);
+
+
         when(albumRepositoryMock.findById(1L)).thenReturn(Optional.of(albumInDB));
-        when(albumRepositoryMock.save(albumInput)).thenReturn(albumInput);
+        when(albumRepositoryMock.save(any(Album.class))).thenAnswer(invocation -> invocation.getArgument(0)); // Return the saved entity
 
 
-        Album updatedAlbum = ASI.updateAlbum(1L,albumInput);
+        Album updatedAlbum = ASI.updateAlbum(1L, albumInput);
 
+        // Assert
         assertEquals(albumInput.getName(), updatedAlbum.getName());
-        verify(albumRepositoryMock,times(1)).findById(1L);
+        assertEquals(albumInput.getArtist(), updatedAlbum.getArtist());
+        assertEquals(albumInput.getReleaseYear(), updatedAlbum.getReleaseYear());
+        assertEquals(albumInput.getGenre(), updatedAlbum.getGenre());
+        assertEquals(albumInput.getLabel(), updatedAlbum.getLabel());
+        assertEquals(albumInput.getPrice(), updatedAlbum.getPrice());
+        assertEquals(albumInput.getStockQuantity(), updatedAlbum.getStockQuantity());
 
+        // Verify repository method calls
+        verify(albumRepositoryMock, times(1)).findById(1L);
+        verify(albumRepositoryMock, times(1)).save(any(Album.class)); // Verify that save was called with any Album
     }
+
     @Test
     @DisplayName("Update non Existing Album in DB")
     void testUpdateNonExistingAlbum() {

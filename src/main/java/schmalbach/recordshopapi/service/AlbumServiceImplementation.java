@@ -92,7 +92,6 @@ public class AlbumServiceImplementation implements AlbumService {
             updatedAlbum.setReleaseYear(albumInput.getReleaseYear());
             updatedAlbum.setGenre(albumInput.getGenre());
             updatedAlbum.setLabel(albumInput.getLabel());
-
             return albumRepository.save(updatedAlbum);
         } else {
             throw new AlbumNotFoundException("Album with id " + ID + " not found");

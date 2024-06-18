@@ -237,15 +237,23 @@ class AlbumServiceImplementationTest {
     @DisplayName("add Album")
     void addAlbum() {
         Album mutter = new Album(1L,"Mutter","Rammstein",2001, Genre.HEAVY_METAL,"Universal Music", 50.0,100);
-
         when(albumRepositoryMock.save(mutter)).thenReturn(mutter);
+
         try {
             Album resultAlbum = ASI.addAlbum(mutter);
             assertEquals(mutter, resultAlbum);
         } catch (AlbumAlreadyExist e){
-            e.getMessage();
+            fail("AlbumAlreadyExist exception was thrown, NOT EXPECTED IN THIS TASTE CASE");
         }
+    }
+    @Test
+    @DisplayName("Album to Add already in DB")
+    void addAlbumAlreadyInDB() throws AlbumAlreadyExist {
+        Album mutter = new Album(1L,"Mutter","Rammstein",2001, Genre.HEAVY_METAL,"Universal Music", 50.0,100);
+        when(albumRepositoryMock.findByNameIgnoreCase(mutter.getName())).thenReturn(Optional.of(mutter));
 
+        assertThrows(AlbumAlreadyExist.class, () -> ASI.addAlbum(mutter));
+        verify(albumRepositoryMock, times(1)).findByNameIgnoreCase(mutter.getName());
     }
 
     @Test

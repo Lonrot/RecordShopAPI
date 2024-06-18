@@ -150,12 +150,12 @@ class AlbumControllerTest {
         long albumID = 1L;
         when(albumServiceImplementation.updateAlbum(albumID, album)).thenReturn(album);
 
-        ResultActions response = mockMvcController.perform(MockMvcRequestBuilders.put("/api/pokemon/1/update")
+        ResultActions response = mockMvcController.perform(MockMvcRequestBuilders.put("/api/v1/album/update/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(album)));
 
         response.andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name", CoreMatchers.is(album.getName())))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.type", CoreMatchers.is(album.getLabel())));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.genre").value(album.getGenre()));
     }
 }

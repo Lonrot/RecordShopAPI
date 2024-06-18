@@ -26,7 +26,8 @@ public class Album {
     private int stockQuantity;
 
     // Constructors
-    public Album() {}
+    public Album() {
+    }
 
     public Album(Long id, String name, String artist, int releaseYear, Genre genre, String label, double price, int stockQuantity) {
         this.id = id;

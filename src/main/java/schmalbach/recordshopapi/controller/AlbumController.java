@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import schmalbach.recordshopapi.exception.AlbumAlreadyExist;
 import schmalbach.recordshopapi.model.Album;
-import schmalbach.recordshopapi.service.AlbumService;
 import schmalbach.recordshopapi.service.AlbumServiceImplementation;
 
 import java.util.List;

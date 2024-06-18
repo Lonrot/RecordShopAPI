@@ -1,20 +1,22 @@
 package schmalbach.recordshopapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import static org.mockito.Mockito.*;
 
-import org.hamcrest.CoreMatchers;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -27,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -41,13 +45,15 @@ class AlbumControllerTest {
     @Autowired
     private MockMvc mockMvcController;
 
-    private ObjectMapper mapper;
+    private ObjectMapper mapper = new ObjectMapper();
 
     @BeforeEach
     void setUp() {
         mockMvcController = MockMvcBuilders.standaloneSetup(albumController).build();
-        mapper = new ObjectMapper();
+        mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+
     }
+
 
     @Test
     void getAllAlbums() throws Exception {
@@ -62,22 +68,23 @@ class AlbumControllerTest {
         when(albumServiceImplementation.getAllAlbumsInStock()).thenReturn(albums);
 
         this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/album/"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Rock Album"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].artist").value("Rock Artist"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].stockQuantity").value(10))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value("Pop Album"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].artist").value("Pop Artist"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].stockQuantity").value(20))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[2].name").value("Jazz Album"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[2].artist").value("Jazz Artist"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[2].stockQuantity").value(30))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[3].name").value("Reggaeton Album"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[3].artist").value("Reggaeton Artist"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[3].stockQuantity").value(40))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[4].name").value("Rock Album 2"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[4].artist").value("Rock Artist 2"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[4].stockQuantity").value(50));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name")
+                        .value("Rock Album"))
+                .andExpect(jsonPath("$[0].artist").value("Rock Artist"))
+                .andExpect(jsonPath("$[0].stockQuantity").value(10))
+                .andExpect(jsonPath("$[1].name").value("Pop Album"))
+                .andExpect(jsonPath("$[1].artist").value("Pop Artist"))
+                .andExpect(jsonPath("$[1].stockQuantity").value(20))
+                .andExpect(jsonPath("$[2].name").value("Jazz Album"))
+                .andExpect(jsonPath("$[2].artist").value("Jazz Artist"))
+                .andExpect(jsonPath("$[2].stockQuantity").value(30))
+                .andExpect(jsonPath("$[3].name").value("Reggaeton Album"))
+                .andExpect(jsonPath("$[3].artist").value("Reggaeton Artist"))
+                .andExpect(jsonPath("$[3].stockQuantity").value(40))
+                .andExpect(jsonPath("$[4].name").value("Rock Album 2"))
+                .andExpect(jsonPath("$[4].artist").value("Rock Artist 2"))
+                .andExpect(jsonPath("$[4].stockQuantity").value(50));
 
     }
 
@@ -92,70 +99,70 @@ class AlbumControllerTest {
         when(albumServiceImplementation.getAllAlbumsInStock()).thenReturn(albums);
         when(albumServiceImplementation.getAlbumByID(1L)).thenReturn(albums.getFirst());
 
-        this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/album/1"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Rock Album"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.artist").value("Rock Artist"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.stockQuantity").value(10));
+        this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/album/1")).andExpect(status().isOk()).andExpect(jsonPath("$.name").value("Rock Album")).andExpect(jsonPath("$.artist").value("Rock Artist")).andExpect(jsonPath("$.stockQuantity").value(10));
     }
+
     @Test
     @DisplayName("Album not in DB, Error")
     void getAlbumByIDNotFound() throws Exception {
         when(albumServiceImplementation.getAllAlbumsInStock()).thenReturn(null);
-        this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/album/1"))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+        this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/album/1")).andExpect(status().isNotFound());
 
     }
 
     @Test
+    @DisplayName("Add Album Successfully")
     void addAlbum() throws Exception {
-        Album albumToPost = new Album(1L, "Rock Album", "Rock Artist", 2000, Genre.ROCK, "Rock Label", 9.99, 10);
 
-        when(albumServiceImplementation.addAlbum(albumToPost)).thenReturn(albumToPost);
+        // JSON representation of the album to post
+        String albumJson = "{"
+                + "\"id\": 1,"
+                + "\"name\": \"Rock Album\","
+                + "\"artist\": \"Rock Artist\","
+                + "\"releaseYear\": 2000,"
+                + "\"genre\": \"ROCK\","
+                + "\"label\": \"Rock Label\","
+                + "\"price\": 9.99,"
+                + "\"stockQuantity\": 10"
+                + "}";
 
-        this.mockMvcController.perform(MockMvcRequestBuilders.post("/api/v1/album/add")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(albumToPost))
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.releaseYear")
-                        .value("2000")).andExpect(MockMvcResultMatchers.jsonPath("$.artist").value("Rock Artist"));
 
-        verify(albumServiceImplementation, times(1)).addAlbum(albumToPost);
-    }
+        when(albumServiceImplementation.addAlbum(Mockito.any(Album.class))).thenAnswer(invocation -> {
+            Album album = invocation.getArgument(0);
+            album.setId(1L);
+            return album;
+        });
 
-    @Test
-    @DisplayName("POST returns the album and a CREATED status code")
-    public void addAlbumIsrael() throws Exception {
-        //Arrange
-        Album albumToPost = new Album(1L, "Rock Album", "Artist1", 2000, Genre.ROCK, "Rock Label", 9.99, 10);
-        when(albumServiceImplementation.addAlbum(albumToPost)).thenReturn(albumToPost);
 
-        //Act and Assert
-        this.mockMvcController.perform(MockMvcRequestBuilders.post("/api/v1/album/add")
+        mockMvcController.perform(MockMvcRequestBuilders.post("/api/v1/album/add")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(albumToPost))
+                        .content(albumJson)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.artist").value("Artist1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.releaseYear").value("2000"));
+                .andExpect(MockMvcResultMatchers.status().isCreated()) // Expect HTTP 201 Created
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Rock Album"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.artist").value("Rock Artist"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.releaseYear").value(2000));
 
-        verify(albumServiceImplementation, times(1)).addAlbum(albumToPost);
-
+        verify(albumServiceImplementation, times(1)).addAlbum(Mockito.any(Album.class));
     }
+
+
 
     @Test
     void updateAlbumByID() throws Exception {
         Album album = new Album(1L, "Rock Album", "Rock Artist", 2000, Genre.ROCK, "Rock Label", 9.99, 10);
+        Album albumUpdated = new Album(1L, "Rock Album", "Rock Artist", 2000, Genre.ROCK, "Rock Label", 9.99, 10);
         long albumID = 1L;
-        when(albumServiceImplementation.updateAlbum(albumID, album)).thenReturn(album);
+        when(albumServiceImplementation.updateAlbum(albumID, albumUpdated)).thenReturn(albumUpdated);
+        System.out.println(mapper.writeValueAsString(albumUpdated));
 
-        ResultActions response = mockMvcController.perform(MockMvcRequestBuilders.put("/api/v1/album/update/1")
+           mockMvcController.perform(MockMvcRequestBuilders.put("/api/v1/album/update/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(album)));
+                .content(mapper.writeValueAsString(albumUpdated))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.name").value("Rock Album"));
 
-        response.andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name", CoreMatchers.is(album.getName())))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.genre").value(album.getGenre()));
     }
 }

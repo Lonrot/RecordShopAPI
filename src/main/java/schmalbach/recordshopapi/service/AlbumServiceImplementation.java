@@ -2,6 +2,7 @@ package schmalbach.recordshopapi.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import schmalbach.recordshopapi.exception.AlbumAlreadyExist;
 import schmalbach.recordshopapi.exception.AlbumNotFoundException;
 import schmalbach.recordshopapi.model.Album;
 import schmalbach.recordshopapi.model.Genre;
@@ -71,8 +72,13 @@ public class AlbumServiceImplementation implements AlbumService {
     }
 
     @Override
-    public Album addAlbum(Album albumToSave) {
-        return albumRepository.save(albumToSave);
+    public Album addAlbum(Album albumToSave) throws AlbumAlreadyExist {
+        if(!albumRepository.findByNameIgnoreCase(albumToSave.getName()).isPresent()) {
+            return albumRepository.save(albumToSave);
+        } else {
+            throw new AlbumAlreadyExist();
+        }
+
     }
 
     @Override

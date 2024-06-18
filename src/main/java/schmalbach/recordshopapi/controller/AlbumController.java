@@ -5,8 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import schmalbach.recordshopapi.exception.AlbumAlreadyExist;
 import schmalbach.recordshopapi.model.Album;
 import schmalbach.recordshopapi.service.AlbumService;
+import schmalbach.recordshopapi.service.AlbumServiceImplementation;
 
 import java.util.List;
 
@@ -15,7 +17,7 @@ import java.util.List;
 public class AlbumController {
 
     @Autowired
-    AlbumService albumService;
+    AlbumServiceImplementation albumService;
 
     @GetMapping
     public ResponseEntity<List<Album>> getAllAlbums() {
@@ -34,22 +36,28 @@ public class AlbumController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Album> createAlbum(@RequestBody Album albumInput) {
-        Album toReturnAlbum = albumService.addAlbum(albumInput);
-     /*   if( toReturnAlbum == null){
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Album already exists");
-        }*/
-        return new ResponseEntity<>(toReturnAlbum, HttpStatus.CREATED);
+    public ResponseEntity<Album> addAlbumController(@RequestBody Album albumInput) {
+        try {
+            Album toReturnAlbum = albumService.addAlbum(albumInput);
+            return new ResponseEntity<>(toReturnAlbum, HttpStatus.CREATED);
+        }catch (AlbumAlreadyExist e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Album already exist");
+        }
+
     }
 
     @PutMapping("/update/{albumID}")
     public ResponseEntity<Album> updateAlbum(@PathVariable long albumID, @RequestBody Album albumInput) {
-       return(albumService.albumExists(albumID))
-               ? new ResponseEntity<>(albumService.updateAlbum(albumID,albumInput), HttpStatus.OK)
-               : new ResponseEntity<>(albumService.addAlbum(albumInput), HttpStatus.CREATED);
 
+        if (albumService.albumExists(albumID)) {
+            return new ResponseEntity<>(albumService.updateAlbum(albumID, albumInput), HttpStatus.OK);
+        } else {
+            try {
+                return new ResponseEntity<>(albumService.addAlbum(albumInput), HttpStatus.CREATED);
+            } catch (AlbumAlreadyExist e) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Album already exist");
+            }
+        }
     }
-
-
 
 }

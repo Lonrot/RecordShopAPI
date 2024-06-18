@@ -1,5 +1,6 @@
 package schmalbach.recordshopapi.service;
 
+import schmalbach.recordshopapi.exception.AlbumAlreadyExist;
 import schmalbach.recordshopapi.model.Album;
 import schmalbach.recordshopapi.model.Genre;
 
@@ -14,7 +15,7 @@ public interface AlbumService {
     List<Album> getAllAlbumsByYear(int year);
     List<Album> getAllAlbumsByGenre(Genre genre);
     Album getAlbumInfoByName(String albumName);
-    Album addAlbum (Album album);
+    Album addAlbum (Album album) throws AlbumAlreadyExist;
     Album updateAlbum (long ID,Album album);
     boolean deleteAlbumByID(long album);
 }

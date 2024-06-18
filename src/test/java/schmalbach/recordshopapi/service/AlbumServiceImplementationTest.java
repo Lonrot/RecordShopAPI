@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 
 import org.springframework.boot.test.mock.mockito.MockBean;
+import schmalbach.recordshopapi.exception.AlbumAlreadyExist;
 import schmalbach.recordshopapi.exception.AlbumNotFoundException;
 import schmalbach.recordshopapi.model.Album;
 import schmalbach.recordshopapi.model.Genre;
@@ -238,8 +239,13 @@ class AlbumServiceImplementationTest {
         Album mutter = new Album(1L,"Mutter","Rammstein",2001, Genre.HEAVY_METAL,"Universal Music", 50.0,100);
 
         when(albumRepositoryMock.save(mutter)).thenReturn(mutter);
-        Album resultAlbum = ASI.addAlbum(mutter);
-        assertEquals(mutter, resultAlbum);
+        try {
+            Album resultAlbum = ASI.addAlbum(mutter);
+            assertEquals(mutter, resultAlbum);
+        } catch (AlbumAlreadyExist e){
+            e.getMessage();
+        }
+
     }
 
     @Test

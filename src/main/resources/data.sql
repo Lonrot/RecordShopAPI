@@ -9,6 +9,15 @@ INSERT INTO ALBUM (name, artist, RELEASE_YEAR, label, price, STOCK_QUANTITY, GEN
 VALUES ('Random Access Memories', 'Daft Punk', 2013, 'Columbia Records', 38.0, 55, 'ELECTRONIC');
 
 INSERT INTO ALBUM (name, artist, RELEASE_YEAR, label, price, STOCK_QUANTITY, GENRE)
+VALUES ('Homework', 'Daft Punk', 1997, 'Virgin Records', 25.0, 50, 'ELECTRONIC');
+
+INSERT INTO ALBUM (name, artist, RELEASE_YEAR, label, price, STOCK_QUANTITY, GENRE)
+VALUES ('Discovery', 'Daft Punk', 2001, 'Virgin Records', 30.0, 45, 'ELECTRONIC');
+
+INSERT INTO ALBUM (name, artist, RELEASE_YEAR, label, price, STOCK_QUANTITY, GENRE)
+VALUES ('Human After All', 'Daft Punk', 2005, 'Virgin Records', 28.0, 40, 'ELECTRONIC');
+
+INSERT INTO ALBUM (name, artist, RELEASE_YEAR, label, price, STOCK_QUANTITY, GENRE)
 VALUES ('Thriller', 'Michael Jackson', 1982, 'Epic Records', 22.0, 150, 'POP');
 
 INSERT INTO ALBUM (name, artist, RELEASE_YEAR, label, price, STOCK_QUANTITY, GENRE)
@@ -58,3 +67,18 @@ VALUES ('Rumours', 'Fleetwood Mac', 1977, 'Warner Bros. Records', 22.0, 85, 'POP
 
 INSERT INTO ALBUM (name, artist, RELEASE_YEAR, label, price, STOCK_QUANTITY, GENRE)
 VALUES ('Master of Puppets', 'Metallica', 1986, 'Elektra Records', 28.0, 60, 'HEAVY_METAL');
+
+INSERT INTO ALBUM (name, artist, RELEASE_YEAR, label, price, STOCK_QUANTITY, GENRE)
+VALUES ('Herzeleid', 'Rammstein', 1995, 'Motor Music', 35.0, 60, 'HEAVY_METAL');
+
+INSERT INTO ALBUM (name, artist, RELEASE_YEAR, label, price, STOCK_QUANTITY, GENRE)
+VALUES ('Sehnsucht', 'Rammstein', 1997, 'Motor Music', 37.0, 55, 'HEAVY_METAL');
+
+INSERT INTO ALBUM (name, artist, RELEASE_YEAR, label, price, STOCK_QUANTITY, GENRE)
+VALUES ('Mutter', 'Rammstein', 2001, 'Motor Music', 40.0, 50, 'HEAVY_METAL');
+
+INSERT INTO ALBUM (name, artist, RELEASE_YEAR, label, price, STOCK_QUANTITY, GENRE)
+VALUES ('Reise, Reise', 'Rammstein', 2004, 'Universal Music', 38.0, 45, 'HEAVY_METAL');
+
+INSERT INTO ALBUM (name, artist, RELEASE_YEAR, label, price, STOCK_QUANTITY, GENRE)
+VALUES ('Liebe ist für alle da', 'Rammstein', 2009, 'Universal Music', 42.0, 40, 'HEAVY_METAL');

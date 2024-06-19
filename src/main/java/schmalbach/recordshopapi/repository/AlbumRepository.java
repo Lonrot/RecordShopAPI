@@ -13,6 +13,8 @@ public interface AlbumRepository extends CrudRepository<Album, Long> {
 
     //Custom query to find album by name , case-insensitive.
     Optional<Album> findByNameIgnoreCase(String name);
-    //Optional<Album> updateByID(long id, Album album);
-    public List<Album> findByGenre(Genre genre);
+    List<Album> findByGenre(Genre genre);
+    List<Album> findByArtistIgnoreCase(String artist);
+    List<Album> findByReleaseYear(int releaseYear);
+
 }

@@ -3,6 +3,7 @@ package schmalbach.recordshopapi.repository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -74,6 +76,7 @@ class AlbumRepositoryTest {
         assertFalse(foundAlbum.isPresent());
     }
 
+
     @Test
     @DisplayName("Find Albums by genre")
     void findByGenre() {
@@ -93,4 +96,25 @@ class AlbumRepositoryTest {
 
         assertThat(foundAlbum, hasSize(0));
     }
+
+    @Test
+    @DisplayName("Find Album by artist")
+    void findByArtist() {
+        List<Album> foundAlbums = albumRepository.findByArtistIgnoreCase("Artist test 1");
+        assertThat(foundAlbums,hasSize(1));
+
+        List<Album> foundAlbums2 = albumRepository.findByArtistIgnoreCase("Rammstein");
+        assertThat(foundAlbums2,hasSize(5));
+    }
+
+    @Test
+    @DisplayName("Release year test")
+    void findByReleaseYear(){
+        //Thriller was released in 1982
+        List<Album> foundAlbums = albumRepository.findByReleaseYear(1982);
+        assertThat(foundAlbums,hasSize(1));
+        List<Album> foundAlbums2 = albumRepository.findByReleaseYear(2026);
+        assertThat(foundAlbums2,empty());
+    }
+
 }

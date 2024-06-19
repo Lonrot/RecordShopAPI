@@ -1,39 +1,41 @@
 package schmalbach.recordshopapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import schmalbach.recordshopapi.RecordShopApiApplication;
 import schmalbach.recordshopapi.model.Album;
 import schmalbach.recordshopapi.model.Genre;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import schmalbach.recordshopapi.service.AlbumServiceImplementation;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
-@SpringBootTest
+
 @AutoConfigureMockMvc
+@SpringBootTest
 class AlbumControllerTest {
 
     @Mock
@@ -45,12 +47,12 @@ class AlbumControllerTest {
     @Autowired
     private MockMvc mockMvcController;
 
-    private ObjectMapper mapper = new ObjectMapper();
+    private ObjectMapper mapper;
 
     @BeforeEach
     void setUp() {
         mockMvcController = MockMvcBuilders.standaloneSetup(albumController).build();
-        mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        mapper = new ObjectMapper();
 
     }
 
@@ -99,7 +101,11 @@ class AlbumControllerTest {
         when(albumServiceImplementation.getAllAlbumsInStock()).thenReturn(albums);
         when(albumServiceImplementation.getAlbumByID(1L)).thenReturn(albums.getFirst());
 
-        this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/album/1")).andExpect(status().isOk()).andExpect(jsonPath("$.name").value("Rock Album")).andExpect(jsonPath("$.artist").value("Rock Artist")).andExpect(jsonPath("$.stockQuantity").value(10));
+        this.mockMvcController.perform(MockMvcRequestBuilders.get("/api/v1/album/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Rock Album"))
+                .andExpect(jsonPath("$.artist").value("Rock Artist"))
+                .andExpect(jsonPath("$.stockQuantity").value(10));
     }
 
     @Test
@@ -147,22 +153,35 @@ class AlbumControllerTest {
     }
 
 
-
     @Test
     void updateAlbumByID() throws Exception {
-        Album album = new Album(1L, "Rock Album", "Rock Artist", 2000, Genre.ROCK, "Rock Label", 9.99, 10);
-        Album albumUpdated = new Album(1L, "Rock Album", "Rock Artist", 2000, Genre.ROCK, "Rock Label", 9.99, 10);
-        long albumID = 1L;
-        when(albumServiceImplementation.updateAlbum(albumID, albumUpdated)).thenReturn(albumUpdated);
-        System.out.println(mapper.writeValueAsString(albumUpdated));
+        // Sample album object and JSON representation
+        Album updatedAlbum = new Album(1L, "Album updated", "Artist updated", 2000, Genre.ROCK, "Rock Label", 9.99, 10);
+        when(albumServiceImplementation.albumExists(1L)).thenReturn(true);
+        when(albumServiceImplementation.updateAlbum(eq(1L), any(Album.class))).thenReturn(updatedAlbum);
 
-           mockMvcController.perform(MockMvcRequestBuilders.put("/api/v1/album/update/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(albumUpdated))
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name").value("Rock Album"));
+        String json = "{\n" +
+                "  \"id\": 1,\n" +
+                "  \"name\": \"Album updated\",\n" +
+                "  \"artist\": \"Artist updated\",\n" +
+                "  \"releaseYear\": 2000,\n" +
+                "  \"genre\": \"ROCK\",\n" +
+                "  \"label\": \"Rock Label\",\n" +
+                "  \"price\": 9.99,\n" +
+                "  \"stockQuantity\": 10\n" +
+                "}";
 
+        // Perform PUT request and validate response
+        mockMvcController.perform(MockMvcRequestBuilders.put("/api/v1/album/update/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)).andDo(result -> {
+                            String content = result.getResponse().getContentAsString();
+                    System.out.println(content);
+                })
+                .andExpect(status().isOk()) // Expecting HTTP status code 200
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Album updated"))
+                .andExpect(jsonPath("$.artist").value("Artist updated"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.releaseYear").value(2000));
     }
+
 }

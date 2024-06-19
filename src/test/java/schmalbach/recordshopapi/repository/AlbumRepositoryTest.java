@@ -15,6 +15,7 @@ import java.util.Optional;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 @DataJpaTest
 class AlbumRepositoryTest {
@@ -65,6 +66,13 @@ class AlbumRepositoryTest {
         assertEquals("Michael Jackson", foundAlbum.get().getArtist());
         System.out.println(foundAlbum.get().getName());
     }
+    @Test
+    @DisplayName("Find album by name - no input")
+    void findByNameIgnoreCase_emptyString() {
+        Optional<Album> foundAlbum = albumRepository.findByNameIgnoreCase("");
+
+        assertFalse(foundAlbum.isPresent());
+    }
 
     @Test
     @DisplayName("Find Albums by genre")
@@ -77,5 +85,12 @@ class AlbumRepositoryTest {
         assertEquals(Genre.ROCK, foundAlbum.get(1).getGenre());
         assertEquals(Genre.ROCK, foundAlbum.getLast().getGenre());
 
+    }
+    @Test
+    @DisplayName("Find Albums by genre - no albums")
+    void findByGenre_noAlbums() {
+        List<Album> foundAlbum = albumRepository.findByGenre(null);
+
+        assertThat(foundAlbum, hasSize(0));
     }
 }

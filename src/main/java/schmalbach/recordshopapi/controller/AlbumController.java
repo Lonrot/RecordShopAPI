@@ -59,4 +59,13 @@ public class AlbumController {
         }
     }
 
+    @DeleteMapping("/delete/{albumID}")
+    public ResponseEntity<String> deleteAlbum(@PathVariable long albumID) {
+        if(albumService.deleteAlbumByID(albumID)) {
+            return ResponseEntity.ok("Deleted album with ID " + albumID + " successfully");
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Album with ID " + albumID + " not found");
+        }
+    }
+
 }

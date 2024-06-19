@@ -101,12 +101,13 @@ public class AlbumServiceImplementation implements AlbumService {
 
     @Override
     public boolean deleteAlbumByID(long albumToDeleteID) {
-       Album albumToDelete = albumRepository.findById(albumToDeleteID).orElse(null);
-       if (albumToDelete != null) {
-           albumRepository.delete(albumToDelete);
+       boolean albumIsPresent = albumRepository.existsById(albumToDeleteID);
+       if (albumIsPresent) {
+           albumRepository.deleteById(albumToDeleteID);
            return true;
+       } else {
+           return false;
        }
-       return false;
     }
 
     public static Genre getGenreFromString(String genre) {
